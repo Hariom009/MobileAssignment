@@ -8,41 +8,35 @@
 import SwiftUI
 
 struct ContentView: View {
-    private var viewModel = ContentViewModel()
+    @StateObject private var viewModel = ContentViewModel() // Use @StateObject instead of private var
     @State private var path: [DeviceData] = [] // Navigation path
 
     var body: some View {
         NavigationStack(path: $path) {
             Group {
-                if let computers = viewModel.data, !computers.isEmpty {
-                    DevicesList(devices: viewModel.data!) { selectedComputer in
+                if viewModel.isLoading {
+                    ProgressView("Loading...")
+                } else if viewModel.data.isEmpty {
+                    Text("No devices found")
+                } else {
+                    DevicesList(devices: viewModel.data) { selectedComputer in
                         viewModel.navigateToDetail(navigateDetail: selectedComputer)
                     }
-                } else {
-                    ProgressView("Loading...")
                 }
             }
-            .onChange(of: viewModel.navigateDetail, {
-                let navigate = viewModel.navigateDetail
-                path.append(navigate!)
-            })
+            .onChange(of: viewModel.navigateDetail) { _, newValue in
+                if let navigate = newValue {
+                    path.append(navigate)
+                }
+            }
             .navigationTitle("Devices")
             .navigationDestination(for: DeviceData.self) { computer in
                 DetailView(device: computer)
             }
             .onAppear {
-                let navigate = viewModel.navigateDetail
-                if (navigate != nil) {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        path.append(navigate!)
-                    }
-                }
-            }
-            .onAppear{
-                DispatchQueue.main.async {
-                    Task{
-                        viewModel.fetchAPI()
-                    }
+                // Simplified - just call fetchAPI once
+                if viewModel.data.isEmpty {
+                    viewModel.fetchAPI()
                 }
             }
         }

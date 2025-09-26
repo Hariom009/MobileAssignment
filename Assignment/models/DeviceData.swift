@@ -7,9 +7,8 @@
 
 import Foundation
 
-
-// MARK: - ComputerItem
-struct DeviceData: Decodable, Identifiable, Hashable, Equatable {
+// MARK: - DeviceData
+struct DeviceData: Codable, Identifiable, Hashable, Equatable {
     static func == (lhs: DeviceData, rhs: DeviceData) -> Bool {
         return lhs.id == rhs.id
     }
@@ -23,8 +22,7 @@ struct DeviceData: Decodable, Identifiable, Hashable, Equatable {
     let data: ItemData?
 }
 
-struct ItemData: Codable{
-    
+struct ItemData: Codable {
     let color: String?
     let capacity: String?
     let price: Double?
@@ -36,7 +34,7 @@ struct ItemData: Codable{
     let caseSize: String?
     let cpuModel: String?
     let hardDiskSize: String?
-    let Capacity: String?
+    let capacityAlternate: String? // Renamed from "Capacity" to avoid confusion
 
     enum CodingKeys: String, CodingKey {
         case color
@@ -50,6 +48,6 @@ struct ItemData: Codable{
         case caseSize = "Case Size"
         case cpuModel = "CPU model"
         case hardDiskSize = "Hard disk size"
-        case Capacity = "Capacity"
+        case capacityAlternate = "Capacity" // Maps the capitalized "Capacity" from JSON
     }
 }
