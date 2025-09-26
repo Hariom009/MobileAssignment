@@ -33,6 +33,7 @@ struct ContentView: View {
             .navigationDestination(for: DeviceData.self) { computer in
                 DetailView(device: computer)
             }
+            // Loading the ui on appear of view to avoid progress view after landing
             .onAppear {
                 // Simplified - just call fetchAPI once
                 if viewModel.data.isEmpty {
