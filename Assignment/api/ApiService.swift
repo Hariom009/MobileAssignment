@@ -1,4 +1,3 @@
-// Enhanced ApiService.swift with better debugging
 import Foundation
 
 class ApiService : NSObject {
@@ -29,23 +28,8 @@ class ApiService : NSObject {
                 print("Successfully decoded \(empData.count) items")
                 print("First item: \(empData.first?.name ?? "No name")")
                 completion(empData)
-            } catch let DecodingError.dataCorrupted(context) {
-                print("Data corrupted: \(context)")
-                completion([])
-            } catch let DecodingError.keyNotFound(key, context) {
-                print("Key '\(key)' not found: \(context.debugDescription)")
-                print("codingPath: \(context.codingPath)")
-                completion([])
-            } catch let DecodingError.valueNotFound(value, context) {
-                print("Value '\(value)' not found: \(context.debugDescription)")
-                print("codingPath: \(context.codingPath)")
-                completion([])
-            } catch let DecodingError.typeMismatch(type, context) {
-                print("Type '\(type)' mismatch: \(context.debugDescription)")
-                print("codingPath: \(context.codingPath)")
-                completion([])
-            } catch {
-                print("Other decoding error: \(error)")
+            }catch {
+                print(" decoding error: \(error)")
                 completion([])
             }
         }.resume()
