@@ -19,14 +19,20 @@ class ApiService : NSObject {
                 completion([]) // Return an empty array on network failure
                 return
             }
-            
             if let data = data {
                 let jsonDecoder = JSONDecoder()
                 let empData = try! jsonDecoder.decode([DeviceData].self, from: data)
-                if (empData.isEmpty) {
-                    completion([])
-                }
+                print("\(empData)")
+                completion(empData)
+                return
             }
         }.resume()
+    }
+    func fetchData() async -> [DeviceData] {
+        await withCheckedContinuation { continuation in
+            fetchDeviceDetails { devices in
+                continuation.resume(returning: devices)
+            }
+        }
     }
 }
